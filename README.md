@@ -1,28 +1,16 @@
 # NSMQ Tournament Platform
 
-Monorepo for three apps sharing one Supabase backend:
-- `apps/admin` — tournament setup, rounds and question authoring
-- `apps/coordinator` — live room controls and contestant rotation
-- `apps/contestant` — student portal and question UI
-- `packages/contest-engine` — shared timing/scoring constants
-- `supabase/migrations` — database schema
+Monorepo for three applications sharing one Supabase backend: admin, coordinator and contestant. Includes shared contest timing/scoring helpers and the initial database migration.
 
 ## Rules
-- Individual student accounts.
-- Automatic contestant rotation.
-- Main question: 30 seconds for calculation, 10 seconds for non-calculation.
-- Main correct +3; wrong or timeout 0.
-- A wrong/timeout main answer opens a 3-second buzz window.
-- First valid buzz wins; the winner receives a fresh 3-second bonus-answer timer.
-- Bonus correct +1; wrong/timeout -1. No buzz means no bonus penalty.
+- Individual student accounts; automatic contestant rotation.
+- Main question timer: 30 seconds for calculation, 10 seconds otherwise.
+- Main correct +3; main wrong/timeout 0.
+- Main wrong/timeout opens a 3-second buzz window. First valid buzz wins and starts a separate 3-second bonus answer timer.
+- Bonus correct +1; bonus wrong/timeout -1. No buzz means no penalty.
 
-## Local setup
-1. Install Node.js 20+ and npm.
-2. Copy `.env.example` to `.env.local` and set the shared Supabase project URL and publishable key.
-3. Install with `npm install`.
-4. Run `npm run dev:admin`, `npm run dev:coordinator`, or `npm run dev:contestant`.
+## Run locally
+Node.js 20+, then `npm install`. Copy `.env.example` to `.env.local`, configure the single Supabase project, and run `npm run dev:admin`, `npm run dev:coordinator`, or `npm run dev:contestant`.
 
-Ports: admin 3001, coordinator 3002, contestant 3003.
-
-## Important
-Current app pages are prototypes. Do not use them to run a real contest yet: database-backed authentication, transactional answer scoring, server-authoritative timers, and atomic first-to-buzz resolution must be implemented and tested before production.
+## Production warning
+Pages are prototypes only. Before a live tournament, implement and test Supabase auth/RLS, server-authoritative timers, atomic first-to-buzz resolution, and transactional scoring. Correct answers must never be exposed to contestants before a question closes.
