@@ -13,7 +13,7 @@ Monorepo for three Next.js apps sharing one Supabase backend: admin, coordinator
 ## Current status
 - Admin, coordinator and contestant preview apps are deployed on Vercel.
 - Supabase schema and role-aware row-level security policies are applied.
-- Server-side RPCs exist for starting/rotating questions, main answers, buzz-in, bonus answers, and timer expiry.
+- Server-side RPCs exist for starting/rotating questions, main answers, buzz-in, bonus answers, timer expiry, and contestant-safe live state (question options are returned without the answer key).
 - Scoring and contest transitions are calculated server-side with row locking.
 - Correct-answer access is restricted to admin/coordinator roles.
 - The UIs are still prototypes and are **not yet connected to Supabase Auth, Realtime or the RPCs**. Do not use for a live event until integration and end-to-end testing are complete.
@@ -35,7 +35,7 @@ Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY in local a
 - submit_main_answer — validates contestant turn and deadline; correct answer +3, wrong answer opens buzz.
 - expire_main_question — records timeout and opens 3-second buzz.
 - buzz_in — atomically accepts the first valid buzz and starts the 3-second bonus timer.
-- submit_bonus_answer — correct +1, wrong -1.
+- submit_bonus_answer — correct +1, wrong -1.\n- get_contest_state — returns the current room/question and your score to a registered participant without exposing the correct option.
 - expire_bonus_answer — records timeout and awards -1.
 - expire_buzz_window — closes buzz when no valid buzz arrives.
 
